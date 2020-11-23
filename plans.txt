@@ -1,0 +1,4 @@
+- Make a pokedex using pokemon api (Commandline then GUI)
+- A library
+- Web Scraping
+- E comrse
