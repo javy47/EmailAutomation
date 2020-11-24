@@ -43,6 +43,7 @@ msg.set_content('Hey I thnk your script is working if you are seeing this messag
 # files = ['tanjiro.png', 'tanjiro2.png', 'plans.txt']
 
 while True:
+    
     try:
         num_attach = int(input('How many files do you want to attach?: '))
     except ValueError:
