@@ -11,14 +11,23 @@ while True:
         print('Login credentials have been entered')
         email_user = os.environ.get('EMAIL_USER') 
         email_pass = os.environ.get('EMAIL_PASS')
+    elif os.environ.get('EMAIL_USER'):
+        print('Email username was entered automatically')
+        email_user = os.environ.get('EMAIL_USER') 
+        email_pass = getpass('Enter Your Password: ')
+    elif os.environ.get('EMAIL_PASS'):
+        email_user = input("Enter your Google Username: ")
+        print('Your password was automatically provided')
+
     else:
         email_user = input("Enter your Google Username: ")
         email_pass = getpass('Enter Your Password: ')
-        try:
-            user.login(email_user, email_pass)
-        except smtplib.SMTPAuthenticationError:
-            print('Login Failure: It seems you have entered the password or username incorrects please try again')
-            continue
+        
+    try:
+        user.login(email_user, email_pass)
+    except smtplib.SMTPAuthenticationError:
+        print('Login Failure: It seems you have entered the password or username incorrects please try again')
+        continue
 
     break       
 
@@ -32,21 +41,38 @@ msg.set_content('Hey I thnk your script is working if you are seeing this messag
 #if i want to send an image
     #path of the file   
 # files = ['tanjiro.png', 'tanjiro2.png', 'plans.txt']
-text_input = str(input('which file do you want to send?: '))
-files = [text_input]
 
-for file in files:
-    file_type=""
-    with open(file, 'rb') as f:
-        file_data = f.read()
-        file_name = f.name
-        if imghdr.what(f.name) in ['jpg','png','jpeg','gif']:
-            file_type = imghdr.what(f.name)
-            
-    if file_type:
-        msg.add_attachment(file_data, maintype='image', subtype=file_type, filename=file_name)
-    else:
-        msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+while True:
+    try:
+        num_attach = int(input('How many files do you want to attach?: '))
+    except ValueError:
+        print('Please enter a number')
+        continue
+    break
+
+for i in range(0,num_attach):
+    print('Select file #'+str(i+1))
+    while True:
+        text_input = str(input('which file do you want to send?: '))
+        files = [text_input]
+        try:
+            for file in files:
+                file_type=""
+                with open(file, 'rb') as f:
+                    file_data = f.read()
+                    file_name = f.name
+                    if imghdr.what(f.name) in ['jpg','png','jpeg','gif']:
+                        file_type = imghdr.what(f.name)
+                        
+                if file_type:
+                    msg.add_attachment(file_data, maintype='image', subtype=file_type, filename=file_name)
+                else:
+                    msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+        except FileNotFoundError:
+            print('The file that you would like to attach does not exist.(At least not in the same repository as this script)')
+            continue
+
+        break
 
 #For later uses i want to be able to use any email server
 
